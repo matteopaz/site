@@ -1,0 +1,232 @@
+/* Palette and spacing modeled on jyopari.github.io, ahidas.com, and
+   jeffreygwang.com: narrow measure, gray ink on warm white, understated
+   links. Set throughout in DM Sans. */
+
+/* DM Sans, self-hosted so the site stays dependency-free */
+@font-face {
+	font-family: 'DM Sans';
+	font-style: normal;
+	font-weight: 400;
+	font-display: swap;
+	src: url('/fonts/dm-sans-400-latin.woff2') format('woff2');
+	unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
+		U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215,
+		U+FEFF, U+FFFD;
+}
+@font-face {
+	font-family: 'DM Sans';
+	font-style: normal;
+	font-weight: 400;
+	font-display: swap;
+	src: url('/fonts/dm-sans-400-latin-ext.woff2') format('woff2');
+	unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304,
+		U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0,
+		U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+	font-family: 'DM Sans';
+	font-style: italic;
+	font-weight: 400;
+	font-display: swap;
+	src: url('/fonts/dm-sans-400i-latin.woff2') format('woff2');
+	unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
+		U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215,
+		U+FEFF, U+FFFD;
+}
+@font-face {
+	font-family: 'DM Sans';
+	font-style: italic;
+	font-weight: 400;
+	font-display: swap;
+	src: url('/fonts/dm-sans-400i-latin-ext.woff2') format('woff2');
+	unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304,
+		U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0,
+		U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+	font-family: 'DM Sans';
+	font-style: normal;
+	font-weight: 700;
+	font-display: swap;
+	src: url('/fonts/dm-sans-400-latin.woff2') format('woff2');
+	unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
+		U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215,
+		U+FEFF, U+FFFD;
+}
+@font-face {
+	font-family: 'DM Sans';
+	font-style: normal;
+	font-weight: 700;
+	font-display: swap;
+	src: url('/fonts/dm-sans-400-latin-ext.woff2') format('woff2');
+	unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304,
+		U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0,
+		U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+:root {
+	--font-sans: 'DM Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+	/* code blocks only — proportional faces cannot hold a column */
+	--font-mono: ui-monospace, 'SF Mono', SFMono-Regular, Menlo, 'Courier New', monospace;
+
+	--text-label: 0.6875rem;
+	--text-caption: 0.75rem;
+	--text-body: 1rem;
+	--text-display: 1.5rem;
+
+	--bg: #fffefb;
+	--text: #4b5563;
+	--title: #363d4d;
+	--heading: #757d8a;
+	--muted: #9ca3af;
+	--border: #d1d5db;
+	--hover: #1f2937;
+	--accent: #ff0059;
+	/* neutral grey for the drawn icons, off the blue-grey text ramp */
+	--icon: #8b8c91;
+
+	/* Sketch strips. The art is 1000:170, so a drawing of length --sk-len
+	   needs a strip 0.17 of that wide. --sk-len past 100vh oversizes the
+	   skylines and crops them top and bottom by --sk-off. */
+	--sk-len: 140vh;
+	--sk-w: calc(var(--sk-len) * 0.17);
+	--sk-off: calc((var(--sk-len) - 100vh) / 2);
+}
+
+* {
+	box-sizing: border-box;
+}
+
+html {
+	overflow-x: clip;
+	max-width: 100%;
+}
+
+/* the native bar is hidden on wide screens; scroll position is shown
+   by darkening the sketch paths from the top down. below the
+   breakpoint the sketches go away and the native bar comes back */
+@media (min-width: 60.01rem) {
+	html {
+		scrollbar-width: none;
+	}
+	html::-webkit-scrollbar {
+		display: none;
+	}
+}
+
+/* page-to-page crossfade, driven by onNavigate in +layout.svelte */
+@keyframes vt-out {
+	to {
+		opacity: 0;
+	}
+}
+@keyframes vt-in {
+	from {
+		opacity: 0;
+		transform: translateY(4px);
+	}
+}
+::view-transition-old(root) {
+	animation: 100ms cubic-bezier(0.4, 0, 1, 1) both vt-out;
+}
+::view-transition-new(root) {
+	animation: 180ms cubic-bezier(0, 0, 0.2, 1) 40ms both vt-in;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	::view-transition-old(root),
+	::view-transition-new(root) {
+		animation: none;
+	}
+}
+
+body {
+	margin: 0;
+	background: var(--bg);
+	color: var(--text);
+	font-family: var(--font-sans);
+	font-size: var(--text-body);
+	line-height: 1.6;
+	font-feature-settings: 'kern' 1, 'liga' 1;
+	text-rendering: optimizeLegibility;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+p {
+	margin: 0 0 1.2em;
+	text-wrap: pretty;
+}
+
+h1,
+h2,
+h3 {
+	text-wrap: balance;
+}
+
+p:last-child {
+	margin-bottom: 0;
+}
+
+a {
+	color: inherit;
+	text-decoration: underline;
+	text-decoration-color: var(--border);
+	text-underline-offset: 3px;
+	transition: color 0.15s, text-decoration-color 0.15s;
+}
+
+a:hover {
+	color: var(--hover);
+	text-decoration-color: var(--hover);
+}
+
+/* small uppercase section marks, after ahidas.com */
+.label {
+	margin: 0 0 0.6em;
+	color: var(--heading);
+	font-size: var(--text-label);
+	font-weight: 700;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+}
+
+main {
+	position: relative;
+	z-index: 1;
+	width: 100%;
+	min-width: 0;
+	/* the horizontal padding clears the two fixed sketch strips on the
+	   screen edges; the column itself is centered inside what is left */
+	/* the extra bottom padding clears the fixed footer */
+	padding: 4rem calc(var(--sk-w) + 2rem) 6rem;
+}
+
+.column {
+	width: 100%;
+	max-width: 35.2rem;
+	min-width: 0;
+	margin-inline: auto;
+	overflow-x: clip;
+	contain: inline-size;
+}
+
+img,
+video {
+	max-width: 100%;
+	min-width: 0;
+	height: auto;
+}
+
+@media (max-width: 60rem) {
+	main {
+		padding: 3rem 1.5rem;
+		overflow-x: hidden;
+	}
+	aside {
+		display: none;
+	}
+	.column {
+		max-width: min(35.2rem, calc(100vw - 3rem));
+	}
+}
