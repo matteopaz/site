@@ -11,7 +11,7 @@
 		<header>
 			<h1>{metadata.name}</h1>
 			<nav>
-				<a href={metadata.resume}>resume</a>
+				<a href={metadata.resume}>rez</a>
 				<a href={metadata.linkedin} target="_blank" rel="noreferrer noopener">[in]</a>
 				<a href={metadata.x} target="_blank" rel="noreferrer noopener">[x]</a>
 			</nav>

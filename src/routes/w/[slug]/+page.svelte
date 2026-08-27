@@ -1,5 +1,4 @@
 <script>
-	import Frame from '$lib/Frame.svelte';
 	import { bySlug, formatDate } from '$lib/writings.js';
 	let { data } = $props();
 	let entry = $derived(bySlug(data.slug));
@@ -18,14 +17,6 @@
 			</header>
 		</div>
 
-		{#if entry.hero}
-			<div class="hero">
-				<Frame>
-					<video src={entry.hero} autoplay muted loop playsinline></video>
-				</Frame>
-			</div>
-		{/if}
-
 		<div class="column prose"><entry.component /></div>
 	</article>
 </main>
@@ -34,23 +25,6 @@
 	article {
 		width: 100%;
 		min-width: 0;
-	}
-	.hero {
-		width: 100%;
-		max-width: 35.2rem;
-		min-width: 0;
-		margin: 0 auto 2.5rem;
-		overflow: visible;
-	}
-	@media (max-width: 60rem) {
-		.hero {
-			max-width: min(35.2rem, calc(100vw - 3rem));
-		}
-	}
-	@media (min-width: 60.01rem) {
-		.hero {
-			max-width: none;
-		}
 	}
 	.back {
 		font-size: var(--text-caption);
@@ -122,8 +96,21 @@
 		color: var(--title);
 		font-weight: 700;
 	}
+	/* bare `?noframe` assets (the flowcharts) run the full measure, with two
+	   lines of air above and below */
+	.prose :global(img.bare) {
+		display: block;
+		width: 100%;
+		height: auto;
+		margin: 3.2rem 0;
+	}
 	.prose :global(.frame) {
 		margin: 2.5rem 0;
+	}
+	/* a video or image opening the piece sits against the header, not below a gap */
+	.prose > :global(:first-child.frame),
+	.prose > :global(:first-child) :global(.frame) {
+		margin-top: 0;
 	}
 	.prose :global(figure) {
 		width: 100%;
@@ -131,6 +118,35 @@
 	}
 	.prose :global(figure .frame) {
 		margin: 0;
+	}
+	/* footnotes: markers in the text, notes collected at the end */
+	.prose :global(.fn-ref) {
+		padding-left: 0.1em;
+		font-size: var(--text-label);
+		font-variant-numeric: oldstyle-nums;
+	}
+	.prose :global(.fn-ref a) {
+		text-decoration: none;
+	}
+	.prose :global(.footnotes) {
+		display: block;
+		margin-top: 3rem;
+		border-top: 1px solid var(--border);
+		padding-top: 1.2rem;
+		color: var(--heading);
+		font-size: var(--text-caption);
+		line-height: 1.6;
+	}
+	.prose :global(.footnotes ol) {
+		margin: 0;
+		padding-left: 1.1rem;
+	}
+	.prose :global(.footnotes li) {
+		margin-bottom: 0.5em;
+	}
+	.prose :global(.fn-back) {
+		padding-left: 0.3em;
+		text-decoration: none;
 	}
 	.prose :global(figcaption) {
 		margin: 0.9rem auto 0;

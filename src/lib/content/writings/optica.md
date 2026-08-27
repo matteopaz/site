@@ -1,154 +1,111 @@
 ---
 title: Getting Hard
 date: 2026-08-16
-hero: optica/laser.mov
 ---
 
-#
+![](optica/laser.mov)
 
-**I've done most of my work behind a computer.** Turns out you can do [a lot there!](w/varwise) I think the reason behind this for me is **accessibility**. To a reasonable extent, software is a level playing field. If you own a modern laptop, you're already playing with god-level equipment relative to some experts. 
+**I've done most of my work behind a computer.** Turns out you can do [a lot there!](/w/varwise) I think the reason behind this for me is **accessibility**. To a reasonable extent, software is a level playing field - A modern laptop is all you need, [if even that](peek:optica/torvalds.png).
 
-![Torvalds](optica/torvalds.png)
+The only thing between you and real impact is clever insight and good implementation. For me, this was in astronomy-- an intrinsically hands-off field.
 
-So, the only thing between you and real impact is clever insight and good implementation. For me, this was in astronomy-- an intrinsically hands-off field.
+Software is fun. But I wouldn't say it's what I'm made for. Really, I just want to make cool, real things.
 
-Software is fun. But I wouldn't say it's what I'm made for. Really, I just want to make cool, real things. That mean
+So when I got the call from [**Optica**](https://optica.industries) to work for the summer, I took the chance to switch things up. This blogpost is two things; a mini proof-of-life for my work over the summer, and a hopefully useful accounting of what to expect when getting into hardware from the softwareman's perspective.
 
-So when I got the call from [**Optica**](https://optica.industries) to work for the summer, I took the chance to switch things up.
+## The engineering problem
 
-### The engineering problem
+Optica is a metals recycling company. **I won't go into details on tech or strategy here for obvious reasons**, but the core engineering task is to take pieces of shredded scrap aluminum, use [LIBS](https://en.wikipedia.org/wiki/Laser-induced_breakdown_spectroscopy) to ascertain its composition, and sort it into buckets.
 
-Optica is a metals recycling company. *I won't go into details on tech or strategy here for obvious reasons*, but the core engineering task is to take pieces of shredded scrap aluminum, use (LIBS)[libs link] to ascertain its composition, and sort it into buckets.
-
-This involves a physical system to feed the pieces in a regular fashion onto a conveyor belt, perception to detect and reason about piece geometry, high-speed control to target and strike the moving piece with a high-powered laser, and a mechanical sortation system.
+This involves a physical system to feed the pieces in a regular fashion onto a conveyor belt, perception to detect and reason about piece geometry, high-speed control to target and strike the moving piece with a high-powered pulsed laser, and a mechanical sortation system.
 
 # Lessons from Going (from) Soft(ware) to Hard(ware)
 
-Although I indulge here, I find the common declaration of being a hardware "person" or "company" comical and useless (link to short writing).
+Hardware is a very different flavor of engineering. One of my goals this summer was to get clarity on this, and so I've put together this little accounting of the big points. 
 
-In any case, working in "hardware" is a very different flavor of engineering. One of my goals this summer was to get clarity on this, and so I've put together this little accounting of the big points. 
-
-## Things can just *not work*
+## Stupid Things Pile Up
 
     Let's say your program has some sort of bug or issue. The path to a fix is essentially always:
 
-    ( Identify the issue ) --> ( Find the responsible source code ) --> ( collect data, reason about the fix, ) --> ( Change text in a file )
+    ![](optica/software.svg?noframe)
 
-    Now, the actual process may be easy, or very difficult. But you have a beautiful guarantee -- computers are perfect, and code is an observable and deterministic thing. All that's between you and success is your ability to express the proper logic. *It's all very clean.*
+    Software is convenient by design. Your results are perfectly determined by your code; code is perfectly accessible and editable. It's a rather clean process - you'll never worry if you can change a textfile.
 
-    In hardware, this is very much not the case. Take our pneumatics system for example; we needed to upgrade our airtank to feed our new sorter-- in principle a very simple thing! Just a tank that stores pressurized air -- I was able to get one off McMaster for next-day delivery in under 10 minutes.
-
-    The next morning, the 8 foot tall, 700lb beast comes off the truck. Problem- *the trucker's pallet jack can't raise it high enough onto our factory floor from the street*. Trucker leaves, and I'm left with an expensive, immovable piece of metal on the sidewalk in front of our building. 
-
-    The path to a solution then looks something more like this:
-
-    ( Realize the issue ) --> ( Try moving it with the whole company )(a) --> ( That fails ) --> ( decide we need a forklift )(b) ( --> ( ask people to move their cars to accomodate the forklift ) --> ( get the tank on the lift ) --> ( shuffle the tank into position )(c) --> [ airtank upgraded! ]
+    In hardware, this is not the case. You're very much liable to stupid blockers; things like stripping a screw, not having the right tool, manufacturer sending the wrong item, etc. The process has no guarantee of simplicity or convenience. 
     
-                                
-                               (a) > ( The pallet breaks ) --> ( go grab the drill and screws ) --> ( pallet fixed )
-                                (b) > (recall from my commute that there's a crane company a few blocks down ) --> (convince them to bring a forklift and foreman out same-day) 
-                                (c) > (feeding system is in the way) --> ( temporary disassembly ) 
+    Take our pneumatics system for example; we needed to upgrade our airtank to feed our new sorter-- in principle a very simple thing! Just a tank that stores pressurized air -- I was able to get one off McMaster for next-day delivery in under 10 minutes. The next morning, the 8 foot tall, 700lb beast comes off the truck. Problem- *the trucker's pallet jack can't raise it high enough onto our factory floor from the street*. Trucker leaves, and I'm left with an expensive, immovable piece of metal on the sidewalk in front of our building. 
 
+    The path to the solution then looks something more like this:
+
+    ![](optica/hardware.svg?noframe)
 
     ![Forklift lifting tank](optica/tankforklift.jpeg)
 
+    To put it simply, stupid things always come up, and they often turn out to be the hard part.
+
+
 ## Design Inertia
-    It is HARD to MAKE things.
- -- singulation overhaul
+
+    Working in hard tech, there's this effect that I'd like to call *design inertia*, the tendency to stick to one design longer than it merits, and the way that choices stack upin a dependent way
+
+    Going from zero-to-one in a physical system is hugely committal. 
+    
+    1. Parts cost money. Sometimes lots of money.
+    2. Parts take time to arrive, sometimes weeks, sometimes even months.
+    3. Fabrication and assembly takes TONS of full-effort man-hours.
+    
+    So when it *doesn't work*, the first instinct is to make a modification. Then another, and another, each iteration not quite working but suggesting a patch for the next. You end up stuck on a mediocre local descent. Often, the actual solution is on an entirely different design branch. **It's both literally and emotionally difficult** to make that leap. 
+
+    Not only this, but in move-fast settings like a startup, you'll often have already built other things on top of these things. Any change at a lower level would cascade into exponentially more work downstream. The marginal cost of a design change is enormous, so it takes a great force to drive one.
+    
+    But sometimes there's a demo tommorrow, and the feeding system is just not working as well as it needs to.
+
+    ![Pre-demo fab marathon. Redoing EVERYTHING.](optica/buildinprogress.jpeg)
+
+
+## Things can just Not Work
+
+    The blessing of software is in the infallibility of computers. You-- through your code-- are in full control of the result, which narrows your scope of responsiblity down to just your own logic. If you're right, it will Just Work™.
+
+    When engineering in the real world, you're susceptible to vastly more niche faults throughout the entire hierarchy of your system. You can do everything right, and something obscure will find a way to break it all. Good luck finding it...
+
+    ![Part of an old system. Juicy bits censored.](optica/system_censored.png)
+
+    There was a distinct roadblock we had was within our controls system-- not a vastly complex system, but one that we had checked over and over again. All was OK, but the laser was not firing. It got to the point where we spent over a thousand dollars just to ship the laser back to the manufacturer and see if it was their issue.
+
+    The culprit? One firmware-level value for the laser's internal Q-switch timing FPGA was misconfigured by a few microseconds...
+
+    ![](optica/oscqswitch.jpeg)
+
+## The real-to-code bridge
+
+    A system is useless if its software doesn't have total knowledge of the physical setup and its properties. How does our belt software know how all of this is setup? Where its sensors are, where the laser is, how to control the laser, how the laser focusing responds to control voltages, etc. *This is something that initially seemed straightforward, but I was surprised by how interesting of a challenge it was.*
+
+    ![Calibrations for the z-axis beam focuser using my makeshift laser profiler and optical system model.](optica/beamsweep.gif)
+
+    A side remark: hardware makes you scrappy. You don't always have what you need on hand (or, you accidentally break a several thousand dollar instrument by blasting it with the laser.), so you get to adapt! Instead of buying (another) specialized laser beam profiler, I figured out that I could instead repurpose the CMOS sensor on [this astronomy cam](https://www.bhphotovideo.com/c/product/1824002-REG/zwo_asi432mm_usb3_0_mono_astronomy.html), put some optics on it, and mount it on my calibration assembly.
+
+    ![Calibration assembly - A cone so that height profiler slices (hyperbolae) can be related to 3-axis planar orientation.](optica/calibcone.jpeg)
+    
 
 ## The Cool Factor
 
- -- pieces flinging
+    Of course, the most important part. 
 
- -- Laser engraving
+    ![Air jet blowing a piece of scrap](optica/airjet.mov)
 
-    *even Famous Rapper Baby Keem thinks it's cool*.
-
-## invisibility
-    the design of a system is in many ways less obvious.
-    -- look at the wirenest
-
-    in software everything must be text in a directory. ultimately perfectly visible
-    in hardware, there is no guarantee: I got a resistor wrong once, here is the difference
-
-    image of system w resistor
-    image of system w new resistor (comically similar)
-
-## The hardware / software bridge
-    hardware needs software and software needs hardware. hardware dont care about software. software needs info about hardware to exist, and that info can often be difficult to give.
-
-    -- Calibration!!
-
-# unknown title
-
-goes without saying that software is becoming less human involved. 
-
-the same will soon happen with hardware, and that will be insane when it does.
-
-the most important thing to work on right now is getting to a similar inflection point for things in real life.
-
-<!-- Up until now, most of my work consisted of software - doing research, writing code, inspecting assets, debugging, producing valuable *information*.  -->
-
-### Miscellaneous Gallery
-
-Things which I'm proud of that don't fit in the narrative:
-
-1. Full pneumatic system and specs
-3. The optical chain
-4. Control equations for our optical system
-5. This nasty bacskspin
-5. lighting cig with laser
-6. meeting baby keem
-
-
-### asset list (specific)
-
-    General
-        -- Pic of whole optical system (g) DONE
-        -- Video of best demo
-        -- Pic(s) of whole belt (g) DONE
-        -- Learning how to weld timelapse DONE
-        -- Cool pic of me from Ahi DONE
-        -- Grinding pic of Jackson DONE
-
-    Picture of tank ordeal
-        -- bay doors pic (g) DONE
-        -- tank on forklift DONE
-
-
-    Laser gating stuff
-        -- Tarca Slack Diagrams DONE
-        -- IRL pic of oscilloscope  DONE
-
-    Singulation
-        -- CAD screenshots (probably only of after exists) ASK
-        -- Before ASK 
-        -- During (cant)
-        -- After (g) DONE
-
-    Laser Engraving
-        -- Baby Keem DONE
-        -- Video of engraving Optica (g) DONE
+    In my humble opinion, making things happen right in front of you will always surpass any result on a computer screen. I value things you can really *experience*. 
     
-    Pieces Flinging
-        -- Blowing an optimal piece on MAX tilt (g) DONE
+    ![even Famous Rapper Baby Keem thinks this stuff is cool](optica/keem.jpeg)
 
 
-    Control Unit
-        -- Picture of whole assembly, extra wires hanging around (g) DONE
-        -- Slightly more focused image on one resistor (g) DONE
-        -- Same as above, except with different resistor (g) (cant)
+# On (The & My) Future
 
-    Calibration
-        -- Render of the whole system and its calculated DOFs (g references)
-    
-        -- Cone Method 
-            -- Pitch method paneled image (cant)
-            -- cool 3d render of slicing cone 
-        
-        -- Beamcam
-            -- DIY beamcam in assembly cone (g) DONE
-            -- DIY beamcam capture with overlay and shit DONE
+It goes without saying that software is becoming less human involved. Within four years, models have gone from useless to essentially superhuman at software development. Indeed, coding is the perfect task; it is verifiable, fully digital, extremely fast to rollout, and strongly transferable. It makes total sense that this occured at the base of the exponential.
 
-        -- Optics
-            -- Paneled diagram of model, sweep, etc DONE
+Hardware is at a different point. It is less verifiable, not digital, slow to rollout and difficult to transfer across subdomains. While models generally understand principles of design and specifics across many fields, they cant *do* anything with it. [Generative CAD](https://github.com/huggingface/cadgenbench) is not yet terribly useful, it obviously can't mount an extrusion for me, and I don't yet trust its spatial perception enough to create anything final.
+
+It's clear to me that the bottleneck for useful artificial physical engineers are physical capabilities, and I'm extremely excited to work on fixing that.
+
+# Miscellaneous Gallery
+

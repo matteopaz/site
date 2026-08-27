@@ -81,7 +81,7 @@
 		color: var(--border);
 	}
 
-	@media (max-width: 60rem) {
+	@media (max-width: 67rem) {
 		footer {
 			/* sketches are hidden below this breakpoint, so the footer can
 			   go back to spanning the full width */

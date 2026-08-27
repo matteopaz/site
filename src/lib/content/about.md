@@ -5,4 +5,10 @@ linkedin: https://www.linkedin.com/in/matteopaz
 x: https://x.com/matteopaz06
 ---
 
-I'm currently at MIT, studying
+I study electrical engineering at MIT. I'm interested in the design of nonstandard embodiments, including force-based approaches and dexterous manipulation.
+
+Most recently I was an electromechanical engineer for [Optica Industries](w/optica). Prior to that, I held an office at Caltech leading a large scale [astronomical study](w/varwise) using archival data.
+
+I'm also a venture partner for [Contrary](https://contrary.com/), looking for exceptional people who are early on.
+
+I grew up in Los Angeles. In my free time, I write on my acoustic guitar, and I enjoy urban exploration.

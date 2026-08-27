@@ -9,9 +9,9 @@
 	font-weight: 400;
 	font-display: swap;
 	src: url('/fonts/dm-sans-400-latin.woff2') format('woff2');
-	unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
-		U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215,
-		U+FEFF, U+FFFD;
+	unicode-range:
+		U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329,
+		U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 @font-face {
 	font-family: 'DM Sans';
@@ -19,9 +19,10 @@
 	font-weight: 400;
 	font-display: swap;
 	src: url('/fonts/dm-sans-400-latin-ext.woff2') format('woff2');
-	unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304,
-		U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0,
-		U+2113, U+2C60-2C7F, U+A720-A7FF;
+	unicode-range:
+		U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329,
+		U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F,
+		U+A720-A7FF;
 }
 @font-face {
 	font-family: 'DM Sans';
@@ -29,9 +30,9 @@
 	font-weight: 400;
 	font-display: swap;
 	src: url('/fonts/dm-sans-400i-latin.woff2') format('woff2');
-	unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
-		U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215,
-		U+FEFF, U+FFFD;
+	unicode-range:
+		U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329,
+		U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 @font-face {
 	font-family: 'DM Sans';
@@ -39,9 +40,10 @@
 	font-weight: 400;
 	font-display: swap;
 	src: url('/fonts/dm-sans-400i-latin-ext.woff2') format('woff2');
-	unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304,
-		U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0,
-		U+2113, U+2C60-2C7F, U+A720-A7FF;
+	unicode-range:
+		U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329,
+		U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F,
+		U+A720-A7FF;
 }
 @font-face {
 	font-family: 'DM Sans';
@@ -49,9 +51,9 @@
 	font-weight: 700;
 	font-display: swap;
 	src: url('/fonts/dm-sans-400-latin.woff2') format('woff2');
-	unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
-		U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215,
-		U+FEFF, U+FFFD;
+	unicode-range:
+		U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329,
+		U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 @font-face {
 	font-family: 'DM Sans';
@@ -59,9 +61,10 @@
 	font-weight: 700;
 	font-display: swap;
 	src: url('/fonts/dm-sans-400-latin-ext.woff2') format('woff2');
-	unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304,
-		U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0,
-		U+2113, U+2C60-2C7F, U+A720-A7FF;
+	unicode-range:
+		U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329,
+		U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F,
+		U+A720-A7FF;
 }
 
 :root {
@@ -91,6 +94,11 @@
 	--sk-len: 140vh;
 	--sk-w: calc(var(--sk-len) * 0.17);
 	--sk-off: calc((var(--sk-len) - 100vh) / 2);
+
+	/* article measure. the 67rem breakpoint below is this plus the two
+	   sketch gutters, so the sketches go away exactly when the column can
+	   no longer hold its full width — the two move together */
+	--col: 42.24rem;
 }
 
 * {
@@ -105,7 +113,7 @@ html {
 /* the native bar is hidden on wide screens; scroll position is shown
    by darkening the sketch paths from the top down. below the
    breakpoint the sketches go away and the native bar comes back */
-@media (min-width: 60.01rem) {
+@media (min-width: 67.01rem) {
 	html {
 		scrollbar-width: none;
 	}
@@ -147,7 +155,9 @@ body {
 	font-family: var(--font-sans);
 	font-size: var(--text-body);
 	line-height: 1.6;
-	font-feature-settings: 'kern' 1, 'liga' 1;
+	font-feature-settings:
+		'kern' 1,
+		'liga' 1;
 	text-rendering: optimizeLegibility;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
@@ -173,7 +183,9 @@ a {
 	text-decoration: underline;
 	text-decoration-color: var(--border);
 	text-underline-offset: 3px;
-	transition: color 0.15s, text-decoration-color 0.15s;
+	transition:
+		color 0.15s,
+		text-decoration-color 0.15s;
 }
 
 a:hover {
@@ -204,7 +216,7 @@ main {
 
 .column {
 	width: 100%;
-	max-width: 35.2rem;
+	max-width: var(--col);
 	min-width: 0;
 	margin-inline: auto;
 	overflow-x: clip;
@@ -218,7 +230,7 @@ video {
 	height: auto;
 }
 
-@media (max-width: 60rem) {
+@media (max-width: 67rem) {
 	main {
 		padding: 3rem 1.5rem;
 		overflow-x: hidden;
@@ -227,6 +239,6 @@ video {
 		display: none;
 	}
 	.column {
-		max-width: min(35.2rem, calc(100vw - 3rem));
+		max-width: min(var(--col), calc(100vw - 3rem));
 	}
 }
