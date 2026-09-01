@@ -1,7 +1,10 @@
 <script>
+	import 'katex/dist/katex.min.css';
 	import { bySlug, formatDate } from '$lib/writings.js';
+
 	let { data } = $props();
 	let entry = $derived(bySlug(data.slug));
+	let Writing = $derived(data.Writing);
 </script>
 
 <svelte:head><title>{entry.title}</title></svelte:head>
@@ -17,7 +20,7 @@
 			</header>
 		</div>
 
-		<div class="column prose"><entry.component /></div>
+		<div class="column prose"><Writing /></div>
 	</article>
 </main>
 
@@ -109,12 +112,17 @@
 	}
 	/* a video or image opening the piece sits against the header, not below a gap */
 	.prose > :global(:first-child.frame),
-	.prose > :global(:first-child) :global(.frame) {
+	.prose > :global(:first-child) :global(.frame),
+	.prose > :global(figure:first-child) {
 		margin-top: 0;
 	}
 	.prose :global(figure) {
 		width: 100%;
 		margin: 2.5rem 0;
+	}
+	.prose :global(figure video) {
+		display: block;
+		width: 100%;
 	}
 	.prose :global(figure .frame) {
 		margin: 0;
@@ -147,6 +155,14 @@
 	.prose :global(.fn-back) {
 		padding-left: 0.3em;
 		text-decoration: none;
+	}
+	.prose :global(.math-display) {
+		margin: 1.6em 0;
+		overflow-x: auto;
+		overflow-y: hidden;
+	}
+	.prose :global(.katex-display) {
+		margin: 0;
 	}
 	.prose :global(figcaption) {
 		margin: 0.9rem auto 0;

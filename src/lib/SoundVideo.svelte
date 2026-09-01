@@ -1,17 +1,34 @@
 <script>
+	import { onMount } from 'svelte';
 	import Frame from '$lib/Frame.svelte';
 
 	let { src, frame = true } = $props();
 	let muted = $state(true);
+	let toggleEl;
+	let shake = $state(false);
+
+	onMount(() => {
+		const el = toggleEl;
+		if (!el) return;
+		const io = new IntersectionObserver(
+			([entry]) => {
+				if (!entry.isIntersecting) return;
+				shake = true;
+				io.disconnect();
+			},
+			{ threshold: 0.6 }
+		);
+		io.observe(el);
+		return () => io.disconnect();
+	});
 </script>
 
 {#snippet media()}
 	<video {src} autoplay bind:muted loop playsinline></video>
 {/snippet}
 
-<!-- The button lives outside <Frame>, not inside it: Frame renders its
-     children in an SVG foreignObject with preserveAspectRatio="none", so
-     anything in there gets non-uniformly scaled by the viewBox. -->
+<!-- The button lives outside <Frame> so the frame's clip path doesn't cut
+     into it at the corners. -->
 <span class="sound-video">
 	{#if frame}
 		<Frame>{@render media()}</Frame>
@@ -21,6 +38,8 @@
 	<button
 		type="button"
 		class="sound-toggle"
+		class:shake
+		bind:this={toggleEl}
 		onclick={() => (muted = !muted)}
 		aria-label={muted ? 'Unmute video' : 'Mute video'}
 	>
@@ -66,12 +85,38 @@
 	}
 	.icon {
 		display: block;
-		width: 1.1rem;
-		height: 1.1rem;
+		width: 1.65rem;
+		height: 1.65rem;
 		filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.35));
 	}
 	.sound-toggle:hover,
 	.sound-toggle:focus-visible {
 		opacity: 1;
+	}
+	.sound-toggle.shake {
+		animation: shake 0.55s 0.25s ease-in-out;
+	}
+	@keyframes shake {
+		0%,
+		100% {
+			transform: rotate(0);
+		}
+		20% {
+			transform: rotate(-14deg);
+		}
+		40% {
+			transform: rotate(12deg);
+		}
+		60% {
+			transform: rotate(-8deg);
+		}
+		80% {
+			transform: rotate(5deg);
+		}
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.sound-toggle.shake {
+			animation: none;
+		}
 	}
 </style>

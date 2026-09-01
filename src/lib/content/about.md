@@ -7,7 +7,7 @@ x: https://x.com/matteopaz06
 
 I study electrical engineering at MIT. I'm interested in the design of nonstandard embodiments, including force-based approaches and dexterous manipulation.
 
-Most recently I was an electromechanical engineer for [Optica Industries](w/optica). Prior to that, I held an office at Caltech leading a large scale [astronomical study](w/varwise) using archival data.
+Most recently I was a mechatronics engineer at [Optica Industries](w/optica). Prior to that, I held an office at Caltech leading a large scale [astronomical study](w/varwise) using archival data.
 
 I'm also a venture partner for [Contrary](https://contrary.com/), looking for exceptional people who are early on.
 

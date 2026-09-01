@@ -1,10 +1,14 @@
 import adapter from '@sveltejs/adapter-static';
 import { mdsvex } from 'mdsvex';
+import katex from 'katex';
 
 const VIDEO = /\.(mov|mp4|webm)$/i;
+const BIN = /\.bin$/i;
+const HERO = /(?:^|\/)hero\.(mov|mp4|webm)$/i;
 const SKIP = /^(https?:|data:|\/|#)/;
 const NOFRAME = /[?&]noframe\b/;
 const PEEK = /^peek:/;
+const PAPER = ['authors', 'journal', 'detail', 'year', 'abstract', 'href'];
 
 function walk(node, fn) {
 	fn(node);
@@ -13,16 +17,105 @@ function walk(node, fn) {
 	}
 }
 
+function textOf(node) {
+	if (!node) return '';
+	if (node.value) return node.value;
+	return (node.children ?? []).map(textOf).join('');
+}
+
+function isPara(node) {
+	return node?.type === 'paragraph';
+}
+
+function hasEmbed(node) {
+	return (node.children ?? []).some((c) => c.type === 'image' || c.type === 'html');
+}
+
+function isCite(node) {
+	return isPara(node) && node.children?.some((c) => c.type === 'emphasis');
+}
+
+function paperLink(node) {
+	if (!isPara(node)) return null;
+	return node.children?.find((c) => c.type === 'link' && /view paper/i.test(textOf(c)));
+}
+
+function paperNode(authors, cite, extra) {
+	const journal = cite.children.find((c) => c.type === 'emphasis');
+	const rest = textOf(cite).replace(textOf(journal), '').trim();
+	const year = /\((\d{4})\)\s*$/.exec(rest);
+	const props = {
+		authors: textOf(authors).trim(),
+		journal: textOf(journal).trim(),
+		detail: rest.replace(/\s*\(\d{4}\)\s*$/, '').trim(),
+		year: year?.[1] ?? '',
+		abstract: '',
+		href: '',
+		...extra
+	};
+	return {
+		type: 'html',
+		value: `<Paper ${PAPER.map((k) => `${k}={${JSON.stringify(props[k])}}`).join(' ')} />`
+	};
+}
+
+/** authors / journal / abstract / IOP link written as ordinary markdown,
+    the same way optica writes a heading or a caption — turned into <Paper>
+    so the citation block keeps its existing type. Abstract is optional. */
+function remarkPaper() {
+	return (tree) => {
+		const kids = tree.children;
+		if (!kids) return;
+		const out = [];
+		for (let i = 0; i < kids.length; i++) {
+			const authors = kids[i];
+			const cite = kids[i + 1];
+			if (isPara(authors) && !hasEmbed(authors) && isCite(cite)) {
+				const label = kids[i + 2];
+				const abstract = kids[i + 3];
+				const afterAbstract = paperLink(kids[i + 4]);
+				if (
+					isPara(label) &&
+					textOf(label).trim() === 'abstract' &&
+					isPara(abstract) &&
+					afterAbstract
+				) {
+					out.push(
+						paperNode(authors, cite, {
+							abstract: textOf(abstract).trim(),
+							href: afterAbstract.url
+						})
+					);
+					i += 4;
+					continue;
+				}
+				const afterCite = paperLink(kids[i + 2]);
+				if (afterCite) {
+					out.push(paperNode(authors, cite, { href: afterCite.url }));
+					i += 2;
+					continue;
+				}
+			}
+			out.push(kids[i]);
+		}
+		tree.children = out;
+	};
+}
+
 /** `![caption](optica/file.png)` → Vite import from `$lib/content/assets/`.
     The bracket text doubles as the alt attribute and, when non-empty, as
     an italic centered caption below the asset — one source, no separate
-    title string or trailing italic paragraph to keep in sync. */
+    title string or trailing italic paragraph to keep in sync.
+    A `.bin` asset is the interactive sky map rather than an image.
+    A file named `hero` is the same kind of opener — full-bleed, no frame. */
 function remarkAssetImages() {
 	return (tree) => {
 		const imports = [];
 		let needsFrame = false;
 		let needsSoundVideo = false;
 		let needsPeek = false;
+		let needsPaper = false;
+		let needsSky = false;
 		const assetSrc = (url) => {
 			if (SKIP.test(url)) return JSON.stringify(url);
 			const id = `__asset_${imports.length}`;
@@ -30,6 +123,7 @@ function remarkAssetImages() {
 			return `{${id}}`;
 		};
 		walk(tree, (node) => {
+			if (node.type === 'html' && /<Paper\b/.test(node.value ?? '')) needsPaper = true;
 			// `[phrase](peek:optica/thing.png)` → an underlined phrase that
 			// reveals the image below it on hover
 			if (node.type === 'link' && PEEK.test(node.url ?? '')) {
@@ -52,6 +146,28 @@ function remarkAssetImages() {
 			// draw their own borders and shouldn't be framed twice
 			const bare = NOFRAME.test(node.url);
 			const url = node.url.replace(NOFRAME, '').replace(/[?&]$/, '');
+			if (BIN.test(url)) {
+				needsSky = true;
+				const caption = node.alt ?? '';
+				const cap = caption
+					? ` caption={${JSON.stringify(caption)}}`
+					: '';
+				node.type = 'html';
+				node.value = `<Sky src=${assetSrc(url)}${cap} />`;
+				delete node.url;
+				delete node.alt;
+				delete node.title;
+				return;
+			}
+			if (HERO.test(url)) {
+				const label = node.alt ? ` aria-label={${JSON.stringify(node.alt)}}` : '';
+				node.type = 'html';
+				node.value = `<figure><video src=${assetSrc(url)} autoplay muted loop playsinline${label}></video></figure>`;
+				delete node.url;
+				delete node.alt;
+				delete node.title;
+				return;
+			}
 			if (!bare && !VIDEO.test(url)) needsFrame = true;
 			const caption = node.alt ?? '';
 			const alt = JSON.stringify(caption);
@@ -95,15 +211,25 @@ function remarkAssetImages() {
 				}
 			}
 		});
-		if (!imports.length && !needsFrame && !needsSoundVideo && !needsPeek) return;
+		if (
+			!imports.length &&
+			!needsFrame &&
+			!needsSoundVideo &&
+			!needsPeek &&
+			!needsPaper &&
+			!needsSky
+		)
+			return;
 		const frameImport = needsFrame ? `import Frame from '$lib/Frame.svelte';\n\t` : '';
 		const soundVideoImport = needsSoundVideo
 			? `import SoundVideo from '$lib/SoundVideo.svelte';\n\t`
 			: '';
 		const peekImport = needsPeek ? `import Peek from '$lib/Peek.svelte';\n\t` : '';
+		const paperImport = needsPaper ? `import Paper from '$lib/Paper.svelte';\n\t` : '';
+		const skyImport = needsSky ? `import Sky from '$lib/Sky.svelte';\n\t` : '';
 		tree.children.unshift({
 			type: 'html',
-			value: `<script>\n\t${frameImport}${soundVideoImport}${peekImport}${imports.join('\n\t')}\n</script>`,
+			value: `<script>\n\t${frameImport}${soundVideoImport}${peekImport}${paperImport}${skyImport}${imports.join('\n\t')}\n</script>`
 		});
 	};
 }
@@ -180,23 +306,86 @@ function remarkFootnotes() {
 	};
 }
 
+const KATEX = { throwOnError: false, strict: 'ignore', macros: { '\\R': '\\mathbb{R}' } };
+const mathByFile = new Map();
+
+function katexHtml(tex, displayMode) {
+	return katex.renderToString(tex.trim(), { ...KATEX, displayMode });
+}
+
+function outsideCode(text, fn) {
+	return text
+		.split(/(```[\s\S]*?```|`[^`]+`)/)
+		.map((part, i) => (i % 2 ? part : fn(part)))
+		.join('');
+}
+
+/** Replace `$$...$$` / `$...$` with inert comments before markdown runs
+    (so `_` in `$f_{FF}$` is not emphasis, and so `\mathbb` never reaches
+    Svelte as raw text). Restore `{@html}` *after* mdsvex — if the HTML
+    lands in the markdown source, typographic quotes break the string. */
+function protectMath(src, filename) {
+	const block = /^---\r?\n[\s\S]*?\r?\n---/.exec(src);
+	const head = block ? block[0] : '';
+	let body = block ? src.slice(block[0].length) : src;
+	const htmls = [];
+	const hold = (tex, display) => {
+		htmls.push(katexHtml(tex, display));
+		return `<!--%%MATH${htmls.length - 1}%%-->`;
+	};
+	body = outsideCode(body, (t) => t.replace(/\$\$([\s\S]+?)\$\$/g, (_, tex) => `\n\n${hold(tex, true)}\n\n`));
+	body = outsideCode(body, (t) => t.replace(/\$([^$\n]+?)\$/g, (_, tex) => hold(tex, false)));
+	mathByFile.set(filename, htmls);
+	return head + body;
+}
+
+function restoreMath(src, filename) {
+	const htmls = mathByFile.get(filename);
+	if (!htmls) return src;
+	mathByFile.delete(filename);
+	return src.replace(/<!--%%MATH(\d+)%%-->/g, (_, i) => {
+		const html = htmls[Number(i)];
+		if (html == null) return _;
+		const display = html.includes('katex-display');
+		const tag = display ? 'div' : 'span';
+		const cls = display ? 'math-display' : 'math-inline';
+		return `<${tag} class="${cls}">{@html ${JSON.stringify(html)}}</${tag}>`;
+	});
+}
+
+function writingsMath() {
+	const ours = (filename) =>
+		filename?.includes('/content/writings/') && filename.endsWith('.md');
+	return {
+		markup({ content, filename }) {
+			if (!ours(filename)) return;
+			return { code: protectMath(content, filename) };
+		}
+	};
+}
+
+function writingsMathRestore() {
+	const ours = (filename) =>
+		filename?.includes('/content/writings/') && filename.endsWith('.md');
+	return {
+		markup({ content, filename }) {
+			if (!ours(filename) || !mathByFile.has(filename)) return;
+			return { code: restoreMath(content, filename) };
+		}
+	};
+}
+
 export default {
 	extensions: ['.svelte', '.md'],
 	preprocess: [
+		writingsMath(),
 		mdsvex({
 			extensions: ['.md'],
-			remarkPlugins: [remarkFootnotes, remarkAssetImages],
+			remarkPlugins: [remarkFootnotes, remarkPaper, remarkAssetImages],
 		}),
+		writingsMathRestore(),
 	],
 	kit: {
 		adapter: adapter(),
-		prerender: {
-			handleHttpError: ({ path, message }) => {
-				// drop resume.pdf into static/ and this goes away; any other
-				// dead link should still fail the build
-				if (path === '/resume.pdf') return;
-				throw new Error(message);
-			},
-		},
 	},
 };

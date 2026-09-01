@@ -1,37 +1,16 @@
 ---
-title: 'VarWISE: infrared variability from NEOWISE single exposures'
+title: 'VarWISE: Complete Infrared Variability via NEOWISE'
 date: 2026-05-18
 ---
 
-<script>
-	import Ref from '$lib/Ref.svelte';
-	import Figure from '$lib/Figure.svelte';
-</script>
+![One pixel per new candidate.](varwise/radec.bin)
 
-NEOWISE spent a decade imaging the entire sky at 3.4 and 4.6 μm. VarWISE is a
-catalog of the infrared-variable objects hiding in that single-exposure data —
-built by clustering apparitions spatially, then detecting and classifying
-variability with machine learning rather than with hand-tuned cuts.
+M. Paz, J. D. Kirkpatrick, R. Uttamchandani, T. Raen, and R. M. Cutri
 
-<Figure
-	src="/img/placeholder.svg"
-	alt=""
-	caption="Lorem ipsum dolor sit amet, consectetur adipiscing elit — a placeholder for the figure that belongs here, with the caption set centred beneath it." />
+*The Astrophysical Journal Supplement Series* Volume 284, Number 2, article 41 (2026)
 
-Every object carries a predicted variable type, a best-fit period where the
-variation is cyclical, and a set of parameters describing the character of the
-variability. The Pure Catalog holds 457,080 objects of highest confidence, just
-under half of them new discoveries; the Extended Catalog holds 1,918,082, of
-which 82% are new.
+abstract
 
-The paper works through the caveats particular to each variable type, and picks
-out a handful of new objects turned up by a first pass through the catalogs.
+The Near-Earth Object Wide-field Infrared Explorer (NEOWISE) mission provides a decade of all-sky time-series data at 3.4 and 4.6 μm and an unprecedented opportunity for the discovery and characterization of variable objects. This paper presents VarWISE, a catalog of infrared-variable objects discovered within the NEOWISE single-exposure data. We employ unique methodologies, including the spatial clustering of apparitions and the adoption of novel machine learning–based variable detection and classification to identify and characterize significant variability. The catalog includes a prediction of variable object type and best-fit period values for each object, if its variations are cyclical, along with other calculated parameters to characterize the nature of the variability. The VarWISE Pure Catalog, containing only variables of highest confidence, has 457,080 objects, 49.81% of which are new discoveries; the VarWISE Extended Catalog, containing all sources, has 1,918,082 objects, 82.02% of which are new. We discuss caveats for each variable type and highlight a few new objects found during a quick perusal of the catalogs' contents.
 
-<Ref
-	authors="M. Paz, J. D. Kirkpatrick, R. Uttamchandani, T. Raen, and R. M. Cutri"
-	title="VarWISE: Infrared Variability via NEOWISE Single-exposure Photometry"
-	venue="The Astrophysical Journal Supplement Series"
-	detail="284, 41"
-	year="2026"
-	href="https://iopscience.iop.org/article/10.3847/1538-4365/ae562f"
-	label="Read on IOPscience" />
+[View paper on Institute of Physics](https://iopscience.iop.org/article/10.3847/1538-4365/ae562f)

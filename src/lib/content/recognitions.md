@@ -1,7 +1,7 @@
 ---
 items:
   - name: YC Summer Grantee
-    detail: Working on supercheap actuators
+    detail: working on supercheap actuators
     year: 2026
 
   - name: Regeneron Science Talent Search
