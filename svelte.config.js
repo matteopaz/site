@@ -228,13 +228,18 @@ function remarkAssetImages() {
 		const paperImport = needsPaper ? `import Paper from '$lib/Paper.svelte';\n\t` : '';
 		const skyImport = needsSky ? `import Sky from '$lib/Sky.svelte';\n\t` : '';
 		const ids = imports.map((_, i) => `__asset_${i}`);
+		// module script owns the asset imports so registerAssets runs on
+		// load; Svelte 5 puts those bindings in instance scope, so repeating
+		// them in <script> is a duplicate declaration
 		const register =
 			ids.length > 0
-				? `<script context="module">\n\timport { registerAssets } from '$lib/assets.js';\n\t${imports.join('\n\t')}\n\tregisterAssets(${ids.join(', ')});\n</script>\n`
+				? `<script module>\n\timport { registerAssets } from '$lib/assets.js';\n\t${imports.join('\n\t')}\n\tregisterAssets(${ids.join(', ')});\n</script>\n`
 				: '';
+		const components = `${frameImport}${soundVideoImport}${peekImport}${paperImport}${skyImport}`;
+		const instance = components ? `<script>\n\t${components}</script>` : '';
 		tree.children.unshift({
 			type: 'html',
-			value: `${register}<script>\n\t${frameImport}${soundVideoImport}${peekImport}${paperImport}${skyImport}${imports.join('\n\t')}\n</script>`
+			value: `${register}${instance}`
 		});
 	};
 }
