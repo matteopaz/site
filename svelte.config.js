@@ -227,9 +227,14 @@ function remarkAssetImages() {
 		const peekImport = needsPeek ? `import Peek from '$lib/Peek.svelte';\n\t` : '';
 		const paperImport = needsPaper ? `import Paper from '$lib/Paper.svelte';\n\t` : '';
 		const skyImport = needsSky ? `import Sky from '$lib/Sky.svelte';\n\t` : '';
+		const ids = imports.map((_, i) => `__asset_${i}`);
+		const register =
+			ids.length > 0
+				? `<script context="module">\n\timport { registerAssets } from '$lib/assets.js';\n\t${imports.join('\n\t')}\n\tregisterAssets(${ids.join(', ')});\n</script>\n`
+				: '';
 		tree.children.unshift({
 			type: 'html',
-			value: `<script>\n\t${frameImport}${soundVideoImport}${peekImport}${paperImport}${skyImport}${imports.join('\n\t')}\n</script>`
+			value: `${register}<script>\n\t${frameImport}${soundVideoImport}${peekImport}${paperImport}${skyImport}${imports.join('\n\t')}\n</script>`
 		});
 	};
 }
@@ -387,5 +392,8 @@ export default {
 	],
 	kit: {
 		adapter: adapter(),
+		prerender: {
+			origin: 'https://matteopaz.com'
+		}
 	},
 };

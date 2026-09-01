@@ -1,13 +1,21 @@
 <script>
 	import 'katex/dist/katex.min.css';
 	import { bySlug, formatDate } from '$lib/writings.js';
+	import Seo from '$lib/Seo.svelte';
 
 	let { data } = $props();
 	let entry = $derived(bySlug(data.slug));
 	let Writing = $derived(data.Writing);
 </script>
 
-<svelte:head><title>{entry.title}</title></svelte:head>
+<Seo
+	title={entry.title}
+	description={entry.description}
+	path="/w/{entry.slug}"
+	type="article"
+	date={entry.date}
+	sameAs={entry.paper}
+/>
 
 <main>
 	<article>

@@ -24,6 +24,21 @@
 		};
 	});
 
+	// once this page's own assets are in, start on everyone else's
+	onMount(() => {
+		const run = () => import('$lib/preload.js').then((m) => m.warmup());
+		const start = () =>
+			'requestIdleCallback' in window
+				? requestIdleCallback(run, { timeout: 2000 })
+				: setTimeout(run, 0);
+		if (document.readyState === 'complete') {
+			start();
+			return;
+		}
+		addEventListener('load', start, { once: true });
+		return () => removeEventListener('load', start);
+	});
+
 	afterNavigate(() => requestAnimationFrame(measure));
 
 	// quick crossfade between pages; the sketches and footer are named

@@ -2,9 +2,11 @@
 	import { writings, formatDate } from '$lib/writings.js';
 	import About, { metadata } from '$lib/content/about.md';
 	import { metadata as recognitions } from '$lib/content/recognitions.md';
+	import Seo from '$lib/Seo.svelte';
+	import { site } from '$lib/site.js';
 </script>
 
-<svelte:head><title>{metadata.name}</title></svelte:head>
+<Seo title={metadata.name} description={site.description} path="/" />
 
 <main>
 	<div class="column">
@@ -12,8 +14,8 @@
 			<h1>{metadata.name}</h1>
 			<nav>
 				<a href={metadata.resume}>rez</a>
-				<a href={metadata.linkedin} target="_blank" rel="noreferrer noopener">[in]</a>
-				<a href={metadata.x} target="_blank" rel="noreferrer noopener">[x]</a>
+				<a href={metadata.linkedin} target="_blank" rel="me noreferrer noopener">[in]</a>
+				<a href={metadata.x} target="_blank" rel="me noreferrer noopener">[x]</a>
 			</nav>
 		</header>
 
