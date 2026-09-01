@@ -1,8 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-	<!-- DM Sans Regular 'M', outlined so the tab icon doesn't depend on the font loading -->
-	<path
-		fill="#fff"
-		transform="translate(16 16) scale(0.03714 -0.03714) translate(-412.5 -350)"
-		d="M77 0V700H175L413 207L649 700H748V0H664V549L444 92H381L161 545V0Z"
-	/>
-</svg>
