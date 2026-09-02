@@ -93,7 +93,7 @@ A side remark: hardware makes you scrappy. You don't always have what you need o
 
 Of course, the most important part.
 
-![Air jet blowing a piece of scrap](optica/airjet.mov)
+![My friend Jackson looking cool](optica/jacksongrind.png)
 
 In my humble opinion, making crazy stuff happen right in front of you will always be more rewarding than any result on a computer screen. I value things you can really *experience*.
 

@@ -1,28 +1,11 @@
 <script>
 	import '../app.css';
 	import { onMount } from 'svelte';
-	import { afterNavigate, onNavigate } from '$app/navigation';
+	import { onNavigate } from '$app/navigation';
 	import Sketch from '$lib/Sketch.svelte';
 	import sf from '$lib/sketches/sf.svg?raw';
 	import la from '$lib/sketches/la.svg?raw';
 	let { children } = $props();
-
-	let progress = $state(0);
-
-	function measure() {
-		const max = document.documentElement.scrollHeight - window.innerHeight;
-		progress = max > 0 ? window.scrollY / max : 0;
-	}
-
-	onMount(() => {
-		measure();
-		addEventListener('scroll', measure, { passive: true });
-		addEventListener('resize', measure);
-		return () => {
-			removeEventListener('scroll', measure);
-			removeEventListener('resize', measure);
-		};
-	});
 
 	// once this page's own assets are in, start on everyone else's
 	onMount(() => {
@@ -39,8 +22,6 @@
 		return () => removeEventListener('load', start);
 	});
 
-	afterNavigate(() => requestAnimationFrame(measure));
-
 	// quick crossfade between pages; the sketches and footer are named
 	// below so they hold still while the column changes
 	onNavigate((navigation) => {
@@ -54,8 +35,8 @@
 	});
 </script>
 
-<Sketch svg={sf} side="left" {progress} />
-<Sketch svg={la} side="right" delay={300} {progress} />
+<Sketch svg={sf} side="left" />
+<Sketch svg={la} side="right" delay={300} />
 
 {@render children()}
 
@@ -67,13 +48,15 @@
 	footer {
 		/* inset past the fixed sketch strips so their background never
 		   paints over the sketches, which must reach the true bottom
-		   of the screen */
+		   of the screen. padding-bottom eats the iOS safe area so the
+		   bar itself always fills to the viewport edge */
 		position: fixed;
 		right: var(--sk-w);
 		bottom: 0;
 		left: var(--sk-w);
 		z-index: 2;
-		padding: 0.9rem 2rem;
+		padding: var(--footer-pad-y) 2rem;
+		padding-bottom: max(var(--footer-pad-y), env(safe-area-inset-bottom, 0px));
 		background: var(--bg);
 		view-transition-name: footer;
 	}

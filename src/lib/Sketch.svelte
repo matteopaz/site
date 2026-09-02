@@ -1,13 +1,43 @@
 <script>
-	let { svg, side = 'left', delay = 0, progress = 0 } = $props();
+	import { onMount } from 'svelte';
+	import { afterNavigate } from '$app/navigation';
+
+	let { svg, side = 'left', delay = 0 } = $props();
+	let root;
+
+	function apply() {
+		if (!root) return;
+		const max = document.documentElement.scrollHeight - window.innerHeight;
+		root.style.setProperty('--progress', String(max > 0 ? window.scrollY / max : 0));
+	}
+
+	onMount(() => {
+		let ticking = false;
+		const onScroll = () => {
+			if (ticking) return;
+			ticking = true;
+			requestAnimationFrame(() => {
+				ticking = false;
+				apply();
+			});
+		};
+		apply();
+		addEventListener('scroll', onScroll, { passive: true });
+		addEventListener('resize', onScroll);
+		return () => {
+			removeEventListener('scroll', onScroll);
+			removeEventListener('resize', onScroll);
+		};
+	});
+
+	afterNavigate(() => requestAnimationFrame(apply));
 </script>
 
-<aside
-	class={side}
-	style="--delay: {delay}ms; --progress: {progress}"
->
+<aside bind:this={root} class={side} style="--delay: {delay}ms">
 	<div class="draw">{@html svg}</div>
-	<div class="draw ink">{@html svg}</div>
+	<div class="ink">
+		<div class="draw">{@html svg}</div>
+	</div>
 </aside>
 
 <style>
@@ -37,11 +67,25 @@
 		position: absolute;
 		inset: 0;
 	}
-	/* darker ink covers the drawing from the top down, in proportion to
-	   how far the page has been scrolled */
+	/* darker ink covers the drawing from the top down. height + overflow
+	   is a rectangle clip, so Firefox can keep the SVG on one layer and
+	   only move the clip as you scroll — clip-path on these paths was
+	   causing the stutter */
 	.ink {
+		position: absolute;
+		top: 0;
+		right: 0;
+		left: 0;
+		height: calc(var(--progress, 0) * 100vh);
+		overflow: clip;
 		color: var(--title);
-		clip-path: inset(0 0 calc((1 - var(--progress)) * 100%) 0);
+		contain: paint;
+	}
+	/* pin the ink drawing to the viewport, not the growing clip window,
+	   so it stays registered with the lighter copy underneath */
+	.ink .draw {
+		bottom: auto;
+		height: 100vh;
 	}
 	aside :global(svg) {
 		display: block;

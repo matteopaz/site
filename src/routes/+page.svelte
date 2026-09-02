@@ -8,7 +8,7 @@
 
 <Seo title={metadata.name} description={site.description} path="/" />
 
-<main>
+<main class="home">
 	<div class="column">
 		<header>
 			<h1>{metadata.name}</h1>

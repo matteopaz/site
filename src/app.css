@@ -99,6 +99,22 @@
 	   sketch gutters, so the sketches go away exactly when the column can
 	   no longer hold its full width — the two move together */
 	--col: 42.24rem;
+
+	/* fixed email bar. --footer-pad-y is the inset above the text;
+	   --footer-clearance is how much main has to leave so nothing sits
+	   under the bar, including the iOS home indicator */
+	--footer-pad-y: 0.9rem;
+	--footer-clearance: calc(
+		var(--footer-pad-y) + 1.2rem + env(safe-area-inset-bottom, 0px)
+	);
+}
+
+/* typed so height: calc(var(--progress) * 100vh) stays a number in Firefox
+   instead of a string token that restyles the whole tree */
+@property --progress {
+	syntax: '<number>';
+	inherits: true;
+	initial-value: 0;
 }
 
 * {
@@ -211,7 +227,7 @@ main {
 	/* the horizontal padding clears the two fixed sketch strips on the
 	   screen edges; the column itself is centered inside what is left */
 	/* the extra bottom padding clears the fixed footer */
-	padding: 4rem calc(var(--sk-w) + 2rem) 6rem;
+	padding: 4rem calc(var(--sk-w) + 2rem) calc(6rem + env(safe-area-inset-bottom, 0px));
 }
 
 .column {
@@ -232,8 +248,13 @@ video {
 
 @media (max-width: 67rem) {
 	main {
-		padding: 3rem 1.5rem;
+		padding: 3rem 1.5rem calc(3rem + var(--footer-clearance));
 		overflow-x: hidden;
+	}
+	/* half a viewport after the last writing, so any title can sit in
+	   the middle of the screen above the fixed footer */
+	main.home {
+		padding-bottom: calc(50dvh + var(--footer-clearance));
 	}
 	aside {
 		display: none;
