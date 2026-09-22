@@ -1,5 +1,9 @@
 ---
 items:
+  - name: Neo Scholar
+    detail: Finalist
+    year: 2026
+
   - name: YC Summer Grantee
     detail: working on supercheap actuators
     year: 2026
