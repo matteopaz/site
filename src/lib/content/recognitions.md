@@ -1,7 +1,6 @@
 ---
 items:
-  - name: Neo Scholar
-    detail: Finalist
+  - name: Neo Scholar Finalist
     year: 2026
 
   - name: YC Summer Grantee

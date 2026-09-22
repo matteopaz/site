@@ -29,7 +29,7 @@
 			<ul class="recognitions">
 				{#each recognitions.items as r}
 					<li>
-						<span>{r.name}<span class="detail">, {r.detail}</span></span>
+						<span>{r.name}{#if r.detail}<span class="detail">, {r.detail}</span>{/if}</span>
 						<time datetime={String(r.year)}>{r.year}</time>
 					</li>
 				{/each}
